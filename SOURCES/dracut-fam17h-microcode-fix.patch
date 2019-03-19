@@ -1,0 +1,42 @@
+From fc3e6cf5a8209389689e546e6533adf2eeb8af9c Mon Sep 17 00:00:00 2001
+From: Andrew Cooper <andrew.cooper3@citrix.com>
+Date: Wed, 13 Dec 2017 15:39:04 +0000
+Subject: [PATCH] Fix microcode loading for fam17h
+
+diff --git a/dracut-functions.sh b/dracut-functions.sh
+index 249d8fb..2981b7a 100755
+--- a/dracut-functions.sh
++++ b/dracut-functions.sh
+@@ -660,18 +660,20 @@ get_ucode_file ()
+     local model=`grep -E "model" /proc/cpuinfo |grep -v name | head -1 | sed s/.*:\ //`
+     local stepping=`grep -E "stepping" /proc/cpuinfo | head -1 | sed s/.*:\ //`
+ 
+-    if [[ "$(get_cpu_vendor)" == "AMD" ]]; then
+-        # If family greater or equal than 0x15
+-        if [[ $family -ge 21 ]]; then
+-            printf "microcode_amd_fam15h.bin"
+-        else
+-            printf "microcode_amd.bin"
+-        fi
+-    fi
+-    if [[ "$(get_cpu_vendor)" == "Intel" ]]; then
+-        # The /proc/cpuinfo are in decimal.
+-        printf "%02x-%02x-%02x" ${family} ${model} ${stepping}
+-    fi
++    case "$(get_cpu_vendor)" in
++        AMD)
++            # Fam15h and later are individually named
++            if [[ $family -ge 21 ]]; then
++                printf "microcode_amd_fam%02xh.bin" ${family}
++            else
++                printf "microcode_amd.bin"
++            fi
++            ;;
++
++        Intel)
++            printf "%02x-%02x-%02x" ${family} ${model} ${stepping}
++            ;;
++    esac
+ }
+ 
+ # Not every device in /dev/mapper should be examined.

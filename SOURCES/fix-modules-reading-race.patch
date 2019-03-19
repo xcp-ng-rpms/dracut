@@ -1,0 +1,58 @@
+From 987b589b51e6bdddd6a1f7a98a1c371c661040d1 Mon Sep 17 00:00:00 2001
+From: Fedora dracut team <dracut-maint@redhat.com>
+Date: Tue, 5 Dec 2017 10:28:53 +0000
+Subject: [PATCH] Fix modules reading race
+
+The content of /proc/modules is not consistent if a module is loaded or
+removed while it is being read. It may also contain a blank line. If
+this happens, the list of modules loaded by the host will be incomplete
+and the initramfs created will be missing modules if hostonly mode is
+enabled.
+
+Fix this by reading /proc/modules twice and ensuring it is consistent.
+Note that part of this fix is in RHEL7 [1] and part of it is based on
+suggestions from the related bug ticket [2]. This fix is not intended
+for upstream since the related dracut code has changed completely
+upstream.
+
+[1] https://github.com/dracutdevs/dracut/commit/b120b0c116591c80503404cd4d2f630508ce9b34
+[2] https://bugzilla.redhat.com/show_bug.cgi?id=1405025
+
+Signed-off-by: Ross Lagerwall <ross.lagerwall@citrix.com>
+
+---
+ dracut.sh | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
+
+diff --git a/dracut.sh b/dracut.sh
+index b7e9f7b..439e6b9 100755
+--- a/dracut.sh
++++ b/dracut.sh
+@@ -1104,9 +1104,23 @@ if [[ $hostonly ]]; then
+ 
+     # check /proc/modules
+     declare -A host_modules
++    # /proc/modules can change while reading it. Grab a consistent view.
++    host_modules_retry=0
++    while :; do
++        ((host_modules_retry++))
++        cat /proc/modules > "$DRACUT_TMPDIR/host_modules"
++        cat /proc/modules > "$DRACUT_TMPDIR/host_modules2"
++        if cmp "$DRACUT_TMPDIR/host_modules" "$DRACUT_TMPDIR/host_modules2"; then
++            break;
++        elif [[ "$host_modules_retry" -gt 100 ]]; then
++            dfatal "could not read /proc/modules"
++            exit 1
++        fi
++    done
+     while read m rest; do
++        [ -z "$m" ] && continue
+         host_modules["$m"]=1
+-    done </proc/modules
++    done < "$DRACUT_TMPDIR/host_modules"
+ fi
+ 
+ unset m
+-- 
+2.9.5
+
