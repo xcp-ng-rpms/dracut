@@ -405,6 +405,7 @@ Patch389: noapply-0011-network-if-rd.neednet-0-we-don-t-need-a-bootdev.patch
 Patch390: fix-modules-reading-race.patch
 Patch391: dracut-fam17h-microcode-fix.patch
 
+BuildRequires: gcc
 BuildRequires: bash git
 
 %if 0%{?fedora} || 0%{?rhel}
