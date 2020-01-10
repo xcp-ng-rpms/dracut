@@ -10,7 +10,7 @@
 
 Name: dracut
 Version: 033
-Release: 535.el7_5.1.xs1.1.0
+Release: 535.el7_5.1.xs1.1.0%{?dist}
 
 Summary: Initramfs generator using udev
 %if 0%{?fedora} || 0%{?rhel}
@@ -576,6 +576,7 @@ Provides: gitsha(https://code.citrite.net/rest/archive/latest/projects/XSU/repos
 
 
 BuildRequires: bash git
+BuildRequires: gcc
 
 %if 0%{?fedora} || 0%{?rhel}
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
