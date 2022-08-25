@@ -53,7 +53,7 @@ diff --git a/modules.d/95fcoe/parse-fcoe.sh b/modules.d/95fcoe/parse-fcoe.sh
  fi
 diff --git a/modules.d/95fcoe/start-fcoemon.sh b/modules.d/95fcoe/start-fcoemon.sh
 new file mode 100755
---- a/modules.d/95fcoe/start-fcoemon.sh	1970-01-01 01:00:00.000000000 +0100
+--- /dev/null
 +++ b/modules.d/95fcoe/start-fcoemon.sh	2019-08-02 14:42:17.967763238 +0100
 @@ -0,0 +1,16 @@
 +#!/bin/bash
