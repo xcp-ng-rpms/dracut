@@ -1,0 +1,22 @@
+From: Vincent Michel <vincent.michel@vates.tech>
+Date: Tue, 2 Jun 2026 18:28:24 +0200
+Subject: [PATCH] Also search in the override directory in
+ find_kernel_modules_by_path
+
+---
+ dracut-functions.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/dracut-functions.sh b/dracut-functions.sh
+index 98a4b88..4194c83 100755
+--- a/dracut-functions.sh
++++ b/dracut-functions.sh
+@@ -1601,7 +1601,7 @@ find_kernel_modules_by_path () {
+     _OLDIFS=$IFS
+     IFS=:
+     while read a rest; do
+-        [[ $a = */$1/* ]] || [[ $a = updates/* ]] || [[ $a = extra/* ]] || [[ $a = weak-updates/* ]] ||continue
++        [[ $a = */$1/* ]] || [[ $a = updates/* ]] || [[ $a = extra/* ]] || [[ $a = weak-updates/* ]] || [[ $a = override/* ]] ||continue
+         printf "%s\n" "$srcmods/$a"
+     done < "$srcmods/modules.dep"
+     IFS=$_OLDIFS

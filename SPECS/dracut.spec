@@ -16,7 +16,7 @@
 
 Name: dracut
 Version: 033
-Release: %{?xsrel}%{?dist}
+Release: %{?xsrel}.1%{?dist}
 
 Summary: Initramfs generator using udev
 %if 0%{?fedora} || 0%{?rhel}
@@ -571,6 +571,9 @@ Patch534: 0001-dracut.sh-workaround-broken-read-from-proc-modules.patch
 Patch535: fix-fcoemon.patch
 Patch536: 0001-fix-dracut-init.sh-force-to-perform-the-actual-actio.patch
 
+# XCP-ng patches
+Patch1001: 0001-Also-search-in-the-override-directory-in-find_kernel.patch
+
 
 BuildRequires: bash git
 BuildRequires: gcc
@@ -1000,6 +1003,9 @@ rm -rf -- $RPM_BUILD_ROOT
 %{?_cov_results_package}
 
 %changelog
+* Tue Jun 02 2026 Vincent Michel <vincent.michel@vates.tech> - 033-539.1
+- Also search in the override directory in find_kernel_modules_by_path
+
 * Fri Apr 10 2026 Frediano Ziglio <frediano.ziglio@citrix.com> - 033-539
 - CP-312109: Force reboot/shutdown/halt
 
