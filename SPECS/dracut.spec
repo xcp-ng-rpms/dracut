@@ -16,7 +16,7 @@
 
 Name: dracut
 Version: 033
-Release: %{?xsrel}.1%{?dist}
+Release: %{?xsrel}.1~xcpng2882.1%{?dist}
 
 Summary: Initramfs generator using udev
 %if 0%{?fedora} || 0%{?rhel}
